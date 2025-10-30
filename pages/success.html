@@ -544,9 +544,9 @@
   <!-- Success Modal with Token Display -->
   <div id="tokenModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tokenTitle">
     <div class="modal-card success" style="max-width: 480px; width: 90vw; max-height: 90vh; overflow-y: auto;">
-      <div id="tokenTitle" class="modal-title" style="font-size: 28px; margin-bottom: 12px;">🎉 Thank you for registering for Evoke 2k25 2K25!</div>
+      <div id="tokenTitle" class="modal-title" style="font-size: 28px; margin-bottom: 12px;">🎉 Thank you for registering for Evoke 2k25!</div>
       <div id="modalUserName" class="modal-text" style="font-size: 18px; font-weight: 500; margin-bottom: 12px; color: var(--muted);">Welcome, [Name]!</div>
-      <div class="modal-text" style="font-size: 16px; font-weight: 500; margin-bottom: 24px; color: var(--primary);">Event Date: September 25, 2025</div>
+      <div class="modal-text" style="font-size: 16px; font-weight: 500; margin-bottom: 24px; color: var(--primary);">Event Date: November 27, 2025</div>
       
       <div style="background: var(--surface); border: 2px solid var(--primary); border-radius: 12px; padding: 16px; margin: 16px 0; text-align: center;">
         <div style="font-size: 12px; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px;">Token Number</div>
@@ -665,8 +665,8 @@
           type: 'Evoke 2k25_ticket',
           token: text,
           name: sessionStorage.getItem('lastName') || '',
-          event: 'Evoke 2k25 2K25',
-          date: 'September 25, 2025',
+          event: 'Evoke 2k25',
+          date: 'November 27, 2025',
           venue: 'Lowry Adventist College, Bangalore',
           ts: Date.now()
         });
@@ -694,8 +694,8 @@
             type: 'Evoke 2k25_ticket',
             token: tokenNo,
             name: userName,
-            event: 'Evoke 2k25 2K25',
-            date: 'September 25, 2025',
+            event: 'Evoke 2k25',
+            date: 'November 27, 2025',
             venue: 'Lowry Adventist College, Bangalore',
             ts: Date.now()
           });
@@ -789,7 +789,7 @@
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 36px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('Evoke 2k25 2K25', canvas.width / 2, 90);
+        ctx.fillText('Evoke 2k25', canvas.width / 2, 90);
         
         // Subtitle
         ctx.font = '18px Arial';
@@ -819,7 +819,7 @@
         // Event date (more prominent)
         ctx.font = 'bold 20px Arial';
         ctx.fillStyle = '#2C74B3';
-        ctx.fillText('Event Date: September 25, 2025', canvas.width / 2, 430);
+        ctx.fillText('Event Date: November 27, 2025', canvas.width / 2, 430);
         
         // Footer
         ctx.font = '14px Arial';
@@ -968,12 +968,16 @@
           try {
             await reveal('online');
             
-            // Store payment context for secure payment flow
+            // Get college from session storage
+            const college = sessionStorage.getItem('lastCollege') || 'N/A';
+            
+            // Store payment context for secure payment flow with all user details
             sessionStorage.setItem('payment_user_context', JSON.stringify({
               token: token,
               name: name,
+              college: college,
               timestamp: new Date().toISOString(),
-              amount: '250',
+              amount: '100',
               purpose: 'Evoke 2k25 Registration Fee'
             }));
             

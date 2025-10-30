@@ -365,14 +365,14 @@
   <main class="container" role="main"
     style="min-height:100vh; padding: 24px 0; display: flex; align-items: center; justify-content: center;">
     <div style="max-width: 400px; margin: 0 auto; padding: 0 16px; width: 100%;">
-      <h1 class="title" style="text-align: center; margin-bottom: 4px;" id="paymentTitle">Pay ₹250</h1>
+      <h1 class="title" style="text-align: center; margin-bottom: 4px;" id="paymentTitle">Pay ₹100</h1>
       <p class="subtitle" style="text-align: center; margin-top: 0;">Scan the QR code to pay using any UPI app</p>
       <!-- User Details (from session) -->
-      <div id="userInfo" style="display:none; background: rgba(44, 116, 179, 0.1); border: 1px solid var(--primary); border-radius: 8px; padding: 12px; margin: 12px 0;">
+      <div id="userInfo" style="background: rgba(44, 116, 179, 0.1); border: 1px solid var(--primary); border-radius: 8px; padding: 12px; margin: 12px 0; text-align: center;">
         <h3 style="margin: 0 0 6px 0; color: var(--primary); font-size: 14px;">Registration Details</h3>
-        <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:12px;">
+        <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:12px; justify-content: center;">
           <div><strong>Name:</strong> <span id="userName"></span></div>
-          <div><strong>Token:</strong> <span id="userToken"></span></div>
+          <div><strong>Token:</strong> <span id="userToken" style="color: var(--primary); font-weight: 700;"></span></div>
         </div>
       </div>
       
@@ -384,8 +384,8 @@
             <img src="../assets/images/qrcode.png" alt="Payment QR Code" style="width: 200px; height: 200px; display: block;" />
           </div>
           <div class="helper" style="margin: 12px 0 0; font-weight: 500; text-align: center;">
-            <div style="margin-top: 12px; font-size: 15px; font-weight: 600; color: #fff;">Name: MADHAVI</div>
-            <div style="margin-top: 4px; font-size: 13px; color: var(--muted);">Phone: 8050816937</div>
+            <div style="margin-top: 12px; font-size: 15px; font-weight: 600; color: #fff;">Name: [New Receiver Name]</div>
+            <div style="margin-top: 4px; font-size: 13px; color: var(--muted);">Phone: [New Phone Number]</div>
           </div>
         </div>
 
@@ -405,6 +405,9 @@
 
         <div class="helper" style="text-align: center; color: var(--muted); font-size: 12px;">
           After payment, you'll receive a confirmation. Please save the transaction ID for your records.
+          <div style="margin-top: 8px; padding: 8px; background: rgba(44, 116, 179, 0.1); border-radius: 6px; font-size: 11px;">
+            <strong style="color: var(--primary);">Note:</strong> Your token number will be automatically included in the payment details.
+          </div>
           <div class="security-badge" style="margin-top: 8px;">
             Secure Payment Gateway
           </div>
@@ -435,7 +438,7 @@
           <div class="avatar-circle">V</div>
         </div>
         <div class="whatsapp-info">
-          <div class="whatsapp-name">Vishal</div>
+          <div class="whatsapp-name">Eliezer Immanuel</div>
           <div class="whatsapp-status">Online • Payment Support</div>
         </div>
         <button class="whatsapp-close" id="whatsappClose">×</button>
@@ -491,9 +494,9 @@
   <script>
     // Secure UPI payment configuration
     const UPI_CONFIG = {
-      id: '8050816937@ibl',
-      amount: '250',
-      merchantName: 'MADHAVI',
+      id: '[new-upi-id]',
+      amount: '100',
+      merchantName: '[New Receiver Name]',
       transactionNote: 'Evoke 2k25 Registration Fee',
       whatsappNumber: '9940132453'
     };
@@ -501,7 +504,7 @@
     // Load event selections and update payment amount (no UI list)
     function loadEventSelections() {
       try {
-        const totalAmount = '250'; // Fixed amount
+        const totalAmount = '100'; // Fixed amount
         UPI_CONFIG.amount = totalAmount;
         // Update page title to show fixed amount
         const titleEl = document.getElementById('paymentTitle');
@@ -598,8 +601,8 @@
       let transactionNote = `Token ${userContext?.token || 'N/A'} Evoke 2k25 Lowry College`;
 
       const params = new URLSearchParams({
-        pa: '8050816937@ibl',
-        pn: 'MADHAVI R',
+        pa: '[new-upi-id]',
+        pn: '[New Receiver Name]',
         mc: '0000',
         mode: '02',
         purpose: '00',
@@ -908,7 +911,7 @@ Please confirm my payment status.`;
         <div style="text-align: left; margin-bottom: 16px;">
           <strong>Option 1:</strong> Copy the UPI ID below and pay manually<br>
           <div style="background: var(--surface); padding: 8px; border-radius: 4px; margin: 8px 0; font-family: monospace;">
-            8050816937@ybl
+            9940132453
           </div>
           <strong>Amount:</strong> ₹${UPI_CONFIG.amount}<br>
           <strong>Note:</strong> Token ${getUserContext()?.token || 'N/A'} Evoke 2k25
@@ -1236,7 +1239,7 @@ Please confirm my payment status.`;
           // Update page title with user info
           const titleElement = document.querySelector('.title');
           if (titleElement && userData.name) {
-            titleElement.innerHTML = `Pay ₹250<br><small style="font-size: 16px; color: var(--muted); font-weight: 400;">for ${userData.name}</small>`;
+            titleElement.innerHTML = `Pay ₹100<br><small style="font-size: 16px; color: var(--muted); font-weight: 400;">for ${userData.name}</small>`;
           }
         }
       } catch (e) {

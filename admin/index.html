@@ -1768,11 +1768,11 @@
 
         // Create verification payload
         const payload = JSON.stringify({
-          type: 'ILLUMINA_ticket',
+          type: 'Evoke2k25_ticket',
           token: tokenNo,
           name: userName,
-          event: 'ILLUMINA 2K25',
-          date: 'September 25, 2025',
+          event: 'Evoke 2k25',
+          date: 'November 27, 2025',
           venue: 'Lowry Adventist College, Bangalore',
           ts: Date.now()
         });
@@ -1855,11 +1855,11 @@
         const QRCode = await import('https://cdn.jsdelivr.net/npm/qrcode@1.5.3/+esm');
 
         const payload = JSON.stringify({
-          type: 'ILLUMINA_ticket',
+          type: 'Evoke2k25_ticket',
           token: tokenNo,
           name: userName,
-          event: 'ILLUMINA 2K25',
-          date: 'September 25, 2025',
+          event: 'Evoke 2k25',
+          date: 'November 27, 2025',
           venue: 'Lowry Adventist College, Bangalore',
           ts: Date.now()
         });
