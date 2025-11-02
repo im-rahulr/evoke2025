@@ -373,6 +373,8 @@
         <div style="display:flex; flex-wrap:wrap; gap:8px; font-size:12px; justify-content: center;">
           <div><strong>Name:</strong> <span id="userName"></span></div>
           <div><strong>Token:</strong> <span id="userToken" style="color: var(--primary); font-weight: 700;"></span></div>
+          <div><strong>Events:</strong> <span id="userEventCount"></span></div>
+          <div><strong>Amount:</strong> <span id="userAmount" style="color: var(--primary); font-weight: 700;"></span></div>
         </div>
       </div>
       
@@ -501,17 +503,38 @@
       whatsappNumber: '919940132453'
     };
 
-    // Load event selections and update payment amount (no UI list)
+    // Load event selections and update payment amount
     function loadEventSelections() {
       try {
-        const totalAmount = '100'; // Fixed amount
+        // Retrieve dynamic amount from sessionStorage
+        let totalAmount = sessionStorage.getItem('totalAmount');
+        let eventCount = sessionStorage.getItem('eventCount');
+        
+        // Validate and default values
+        if (!totalAmount || isNaN(parseInt(totalAmount)) || parseInt(totalAmount) <= 0) {
+          console.warn('Invalid or missing totalAmount, defaulting to ₹100');
+          totalAmount = '100';
+          sessionStorage.setItem('totalAmount', '100');
+        }
+        
+        if (!eventCount || isNaN(parseInt(eventCount)) || parseInt(eventCount) < 0) {
+          console.warn('Invalid or missing eventCount, defaulting to 1');
+          eventCount = '1';
+          sessionStorage.setItem('eventCount', '1');
+        }
+        
+        // Update UPI config
         UPI_CONFIG.amount = totalAmount;
-        // Update page title to show fixed amount
+        
+        // Update page title to show dynamic amount
         const titleEl = document.getElementById('paymentTitle');
         if (titleEl) titleEl.textContent = `Pay ₹${totalAmount}`;
-        // Update transaction note using user context
+        
+        // Update transaction note with event count and amount
         const userContext = getUserContext();
-        UPI_CONFIG.transactionNote = `Token ${userContext?.token || 'N/A'} Evoke 2k25 Registration`;
+        UPI_CONFIG.transactionNote = `Token ${userContext?.token || 'N/A'} Evoke 2k25 - ${eventCount} event(s) - ₹${totalAmount}`;
+        
+        console.log('Payment initialized:', { eventCount, totalAmount });
       } catch (e) {
         console.warn('Unable to initialize payment amount:', e);
       }
@@ -656,13 +679,15 @@
       }
     }
 
-    // Show the Registration Details box on the payment page (without college)
+    // Show the Registration Details box on the payment page
     function displayUserInfoPayment() {
       try {
         const user = getUserContext();
         const userInfoBox = document.getElementById('userInfo');
         const nameEl = document.getElementById('userName');
         const tokenEl = document.getElementById('userToken');
+        const eventCountEl = document.getElementById('userEventCount');
+        const amountEl = document.getElementById('userAmount');
 
         if (!userInfoBox || !nameEl || !tokenEl) return;
 
@@ -673,6 +698,13 @@
           const rawToken = user.token ?? '';
           const paddedToken = (typeof rawToken === 'number') ? String(rawToken).padStart(3, '0') : String(rawToken);
           tokenEl.textContent = paddedToken;
+          
+          // Get event count and amount from sessionStorage
+          const eventCount = sessionStorage.getItem('eventCount') || '0';
+          const totalAmount = sessionStorage.getItem('totalAmount') || '0';
+          
+          if (eventCountEl) eventCountEl.textContent = eventCount;
+          if (amountEl) amountEl.textContent = `₹${totalAmount}`;
 
           // Reveal box
           userInfoBox.style.display = 'block';

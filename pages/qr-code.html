@@ -243,6 +243,10 @@
       // Display token and user info
       document.getElementById('tokenNumber').textContent = token;
       
+      // Get pricing data from sessionStorage
+      const eventCount = sessionStorage.getItem('eventCount') || '0';
+      const totalAmount = sessionStorage.getItem('totalAmount') || '0';
+      
       // Populate user info
       const userInfoContainer = document.getElementById('userInfo');
       userInfoContainer.innerHTML = `
@@ -253,6 +257,14 @@
         <div class="user-info-item">
           <span class="user-info-label">Token:</span>
           <span class="user-info-value">${token}</span>
+        </div>
+        <div class="user-info-item">
+          <span class="user-info-label">Events Selected:</span>
+          <span class="user-info-value">${eventCount}</span>
+        </div>
+        <div class="user-info-item">
+          <span class="user-info-label">Total Amount:</span>
+          <span class="user-info-value">₹${totalAmount}</span>
         </div>
         <div class="user-info-item">
           <span class="user-info-label">Event:</span>
@@ -269,10 +281,10 @@
       `;
 
       // Generate QR code
-      generateQRCode(token, name);
+      generateQRCode(token, name, eventCount, totalAmount);
     }
 
-    async function generateQRCode(tokenNo, userName) {
+    async function generateQRCode(tokenNo, userName, eventCount, totalAmount) {
       try {
         const canvas = document.getElementById('qrCanvas');
         
@@ -285,6 +297,8 @@
           type: 'Evoke 2k25_ticket',
           token: tokenNo,
           name: userName,
+          eventCount: eventCount || '0',
+          totalAmount: totalAmount || '0',
           event: 'Evoke 2k25',
           date: 'November 27, 2025',
           venue: 'Lowry Adventist College, Bangalore',

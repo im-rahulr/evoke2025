@@ -632,7 +632,11 @@
           btn.textContent = '⏳ Generating...';
           btn.disabled = true;
           
-          await generateTicket(token, name, 'onspot');
+          // Get pricing data from sessionStorage
+          const eventCount = sessionStorage.getItem('eventCount') || '0';
+          const totalAmount = sessionStorage.getItem('totalAmount') || '0';
+          
+          await generateTicket(token, name, 'onspot', eventCount, totalAmount);
           await trackDownload(token, name, 'onspot');
           
           btn.textContent = '✅ RSVP Saved';
@@ -761,7 +765,7 @@
       }
 
       // Function to generate and download professional ticket
-      async function generateTicket(tokenNo, userName, mode) {
+      async function generateTicket(tokenNo, userName, mode, eventCount, totalAmount) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
@@ -816,15 +820,25 @@
         ctx.fillStyle = '#B3B3B3';
         ctx.fillText(`Payment Mode: ${mode === 'onspot' ? 'Pay on Spot' : 'Online Payment'}`, canvas.width / 2, 400);
         
-        // Event date (more prominent)
+        // Event count
+        ctx.font = '18px Arial';
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(`Events Selected: ${eventCount || 0}`, canvas.width / 2, 430);
+        
+        // Total amount
         ctx.font = 'bold 20px Arial';
         ctx.fillStyle = '#2C74B3';
-        ctx.fillText('Event Date: November 27, 2025', canvas.width / 2, 430);
+        ctx.fillText(`Total Amount: ₹${totalAmount || 0}`, canvas.width / 2, 460);
+        
+        // Event date (moved down)
+        ctx.font = 'bold 18px Arial';
+        ctx.fillStyle = '#B3B3B3';
+        ctx.fillText('Event Date: November 27, 2025', canvas.width / 2, 490);
         
         // Footer
         ctx.font = '14px Arial';
         ctx.fillStyle = '#2C74B3';
-        ctx.fillText('Please present this ticket at the venue', canvas.width / 2, 480);
+        ctx.fillText('Please present this ticket at the venue', canvas.width / 2, 520);
         
         // Generate and add QR code (scannable but compact)
         const qrCanvas = await generateQRCode(tokenNo, 120);
@@ -892,7 +906,11 @@
             downloadBtn.textContent = '⏳ Generating...';
             downloadBtn.disabled = true;
             
-            await generateTicket(token, name, mode);
+            // Get pricing data from sessionStorage
+            const eventCount = sessionStorage.getItem('eventCount') || '0';
+            const totalAmount = sessionStorage.getItem('totalAmount') || '0';
+            
+            await generateTicket(token, name, mode, eventCount, totalAmount);
             await trackDownload(token, name, mode);
             
             downloadBtn.textContent = '✅ RSVP Saved';

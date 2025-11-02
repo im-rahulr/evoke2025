@@ -518,6 +518,8 @@
               <th>Phone</th>
               <th>Class</th>
               <th>Events</th>
+              <th>Event Count</th>
+              <th>Amount</th>
               <th>Payment</th>
               <th>School name</th>
               <th>IP</th>
@@ -1250,8 +1252,39 @@
               eventsDisplay = `<div title="Error loading events" style="color: var(--error);">Error</div>`;
             }
 
+            // Get event count and total amount
+            let eventCount = 0;
+            let totalAmount = 0;
+            
+            try {
+              // First try to get from registration document
+              if (d.eventCount !== undefined && d.eventCount !== null) {
+                eventCount = Number(d.eventCount) || 0;
+              } else if (eventsArray.length > 0) {
+                eventCount = eventsArray.length;
+              }
+              
+              // Get total amount
+              if (d.totalAmount !== undefined && d.totalAmount !== null) {
+                totalAmount = Number(d.totalAmount) || 0;
+              } else if (d.shortId && __eventSelectionsByToken && __eventSelectionsByToken.has(String(d.shortId))) {
+                const es = __eventSelectionsByToken.get(String(d.shortId));
+                if (es && es.totalAmount !== undefined) {
+                  totalAmount = Number(es.totalAmount) || 0;
+                }
+              } else {
+                // Calculate from event count
+                totalAmount = eventCount * 100;
+              }
+            } catch (amountError) {
+              console.warn('Error calculating amount for user:', d.username, amountError);
+            }
+            
+            const eventCountDisplay = eventCount > 0 ? String(eventCount) : '—';
+            const amountDisplay = totalAmount > 0 ? `₹${totalAmount}` : '—';
+            
             const actionsHtml = `<button class="btn btn-secondary btn-sm" data-action="delete" data-id="${d.id}" aria-label="Delete user">Delete</button>`;
-            tr.innerHTML = `<td>${idx++}</td><td>${escapeHtml(d.username || '')}</td><td>${escapeHtml(d.phone || '—')}</td><td>${escapeHtml(d.course || '')}</td><td>${eventsDisplay}</td><td>${escapeHtml(d.paymentMode || '—')}</td><td>${escapeHtml(d.college || '')}</td><td>${escapeHtml(d.ip || '')}</td><td>${escapeHtml(shortIdDisplay)}</td><td>${created}</td><td>${actionsHtml}</td>`;
+            tr.innerHTML = `<td>${idx++}</td><td>${escapeHtml(d.username || '')}</td><td>${escapeHtml(d.phone || '—')}</td><td>${escapeHtml(d.course || '')}</td><td>${eventsDisplay}</td><td style="text-align: center;">${eventCountDisplay}</td><td style="text-align: right; font-weight: 600; color: var(--primary);">${amountDisplay}</td><td>${escapeHtml(d.paymentMode || '—')}</td><td>${escapeHtml(d.college || '')}</td><td>${escapeHtml(d.ip || '')}</td><td>${escapeHtml(shortIdDisplay)}</td><td>${created}</td><td>${actionsHtml}</td>`;
 
             tbody.appendChild(tr);
 

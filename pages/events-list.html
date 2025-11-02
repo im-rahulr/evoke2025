@@ -85,6 +85,19 @@
       gap: 6px;
     }
     
+    .event-price-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: var(--primary);
+      color: #10210a;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
     .select-btn {
       padding: 6px 12px;
       border: 1px solid var(--primary);
@@ -128,6 +141,29 @@
       overflow-y: auto;
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
+    }
+    
+    .summary-totals {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 12px;
+      padding-top: 12px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 14px;
+      color: var(--text);
+    }
+    
+    .summary-row.total {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 8px;
+      padding-top: 8px;
     }
     
     .selection-summary.show {
@@ -267,8 +303,18 @@
     <div class="selection-summary" id="selectionSummary">
       <h3 style="margin-top: 0;">Selected Events</h3>
       <div id="summaryItems"></div>
+      <div class="summary-totals">
+        <div class="summary-row">
+          <span>Events Selected:</span>
+          <span id="eventCount">0</span>
+        </div>
+        <div class="summary-row total">
+          <span>Total Amount:</span>
+          <span id="totalAmount">₹0</span>
+        </div>
+      </div>
       <button class="btn btn-primary btn-block" id="proceedToPayment" style="margin-top: 16px;">
-        Submit
+        Continue to Payment
       </button>
     </div>
     
@@ -465,6 +511,7 @@
         eventCard.dataset.eventId = event.id;
         
         eventCard.innerHTML = `
+          <div class="event-price-badge">₹100</div>
           <div class="event-content">
             <div class="event-title">${event.title}</div>
             <div class="event-description">${event.description}</div>
@@ -531,9 +578,26 @@
         });
         
         summaryItems.innerHTML = summaryHTML;
+        
+        // Calculate event count and total amount
+        const eventCount = Object.keys(selectedEvents).length;
+        const totalAmount = eventCount * 100;
+        
+        // Update DOM elements
+        document.getElementById('eventCount').textContent = eventCount;
+        document.getElementById('totalAmount').textContent = `₹${totalAmount}`;
+        
+        // Store in sessionStorage
+        sessionStorage.setItem('eventCount', String(eventCount));
+        sessionStorage.setItem('totalAmount', String(totalAmount));
+        
       } else {
         selectionSummary.classList.remove('show');
         document.body.classList.remove('has-summary');
+        
+        // Reset values when no events selected
+        sessionStorage.setItem('eventCount', '0');
+        sessionStorage.setItem('totalAmount', '0');
       }
     }
 
@@ -588,9 +652,15 @@
         const userDocData = querySnapshot.docs[0];
         console.log('User document found:', userDocData.id);
 
-        // Calculate total amount: ₹100 per event
-        const totalAmount = Object.keys(selectedEvents).length * 100;
+        // Calculate total amount and event count
+        const eventCount = Object.keys(selectedEvents).length;
+        const totalAmount = eventCount * 100;
+        console.log('Event count:', eventCount);
         console.log('Total amount calculated:', totalAmount);
+        
+        // Ensure sessionStorage has the latest values
+        sessionStorage.setItem('eventCount', String(eventCount));
+        sessionStorage.setItem('totalAmount', String(totalAmount));
 
         // Persist selections in eventSelections (rules allow create here)
         const eventSelectionsRef = collection(db, 'eventSelections');
@@ -600,6 +670,7 @@
           userId: userDocData.id,
           userToken: userContext.token,
           selections: eventSelections,
+          eventCount: eventCount,
           totalAmount: totalAmount,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp(),
@@ -614,6 +685,7 @@
             hasSelectedEvents: true,
             eventSelectionId: selectionDocRef.id,
             eventSelectionTimestamp: serverTimestamp(),
+            eventCount: eventCount,
             totalAmount: totalAmount
           });
           console.log('Registration document updated successfully');

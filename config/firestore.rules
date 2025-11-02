@@ -24,7 +24,7 @@ service cloud.firestore {
         // Only allow changing these whitelisted fields
         request.resource.data.diff(resource.data).changedKeys().hasOnly([
           'paymentMode','paymentAt','rsvpDownloaded','rsvpDownloadedAt','adminGenerated','paymentUpdatedAt','paymentUpdatedBy',
-          'hasSelectedEvents','eventSelectionId','eventSelections','totalAmount','eventSelectionTimestamp',
+          'hasSelectedEvents','eventSelectionId','eventSelections','totalAmount','eventCount','eventSelectionTimestamp',
           'paymentApproved','paymentApprovedAt','paymentApprovedBy','paymentType','transactionId','receiptNo',
           'deleted','deletedAt','deletedReason','restoredAt'
         ]) &&
@@ -114,10 +114,12 @@ service cloud.firestore {
                      request.resource.data.userToken is string &&
                      request.resource.data.userToken.matches('^\\d{3}$') &&
                      request.resource.data.selections is list &&
+                     request.resource.data.eventCount is number &&
+                     request.resource.data.eventCount >= 0 &&
                      request.resource.data.totalAmount is number &&
                      request.resource.data.totalAmount >= 0 &&
                      request.resource.data.paymentStatus in ['pending', 'completed', 'failed'] &&
-                     request.resource.data.keys().hasOnly(['userId','userToken','selections','totalAmount','createdAt','updatedAt','paymentStatus']);
+                     request.resource.data.keys().hasOnly(['userId','userToken','selections','eventCount','totalAmount','createdAt','updatedAt','paymentStatus']);
       
       allow read: if true; // for admin panel access
       
