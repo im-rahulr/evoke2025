@@ -122,7 +122,35 @@
       color: #10210a;
     }
     
+    .team-controls {
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
 
+    .team-controls.show { display: flex; }
+
+    .team-btn {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,0.2);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .team-size {
+      min-width: 22px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--text);
+      font-size: 12px;
+    }
     
     .selection-summary {
       position: fixed;
@@ -277,6 +305,16 @@
 </head>
 <body class="home-page">
   <main class="container" role="main">
+    <nav aria-label="Progress" style="margin: 6px 0 8px 0;">
+      <div style="display:flex; gap:8px; align-items:center; font-size:12px; color:var(--muted);">
+        <span style="font-weight:700; color:var(--primary)">1</span>
+        <span>Event Selection</span>
+        <span>›</span>
+        <span style="opacity:.75">2 Team Composition</span>
+        <span>›</span>
+        <span style="opacity:.75">3 Details</span>
+      </div>
+    </nav>
     <header class="event-header">
       <div class="event-info">
         <div class="event-breadcrumb">
@@ -313,8 +351,8 @@
           <span id="totalAmount">₹0</span>
         </div>
       </div>
-      <button class="btn btn-primary btn-block" id="proceedToPayment" style="margin-top: 16px;">
-        Continue to Payment
+      <button class="btn btn-primary btn-block" id="proceedToDetails" style="margin-top: 16px;">
+        Continue to Details
       </button>
     </div>
     
@@ -339,100 +377,133 @@
         id: 'dumb-charades',
         title: 'Dumb Charades',
         description: 'Team of 2. Act without speaking; 1 minute per word. 10 prompts, need 8 correct to qualify.',
-        maxParticipants: 2
+        minParticipants: 2,
+        maxParticipants: 2,
+        capacity: 100
       },
       {
         id: 'general-quiz',
         title: 'G.K. Quiz',
         description: 'Two per team. Prelims written; finals oral. Includes Aptitude, Current Affairs, Sports, Science and more.',
-        maxParticipants: 2
+        minParticipants: 2,
+        maxParticipants: 2,
+        capacity: 100
       },
       {
         id: 'fashion-show',
         title: 'Fashion Show (Indian Culture)',
         description: 'Individual. Modest attire, props allowed. 30s on stage.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 100
       },
       {
         id: 'group-song',
         title: 'Group Song',
         description: '3–5 members. Max 4 mins. Any language; judged on vocals, musicality, presence and style.',
-        maxParticipants: 5
+        minParticipants: 3,
+        maxParticipants: 5,
+        capacity: 40
       },
       {
         id: 'solo-singing',
         title: 'Solo Song',
         description: 'Individual. Max 2 mins. Any language; decent content. Own track/karaoke allowed.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 200
       },
       {
         id: 'group-dance',
         title: 'Group Dance',
         description: '2–5 members. Theme: Cinematic. 3+1 mins; fusion allowed; no religious acts.',
-        maxParticipants: 5
+        minParticipants: 2,
+        maxParticipants: 5,
+        capacity: 40
       },
       {
         id: 'solo-dance',
         title: 'Solo Dance',
         description: 'Individual. 4 mins. Free Style. Fusion allowed. No religious acts; decent performance.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 200
       },
       {
         id: 'solo-instrumental',
         title: 'Instrumental Music',
         description: 'Individual. Bring your own instruments. Time limit 3 minutes.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 100
       },
       {
         id: 'face-painting',
         title: 'Face Painting',
         description: 'Team of 2 (one paints on the other). Time limit 1 hour. Free Theme.',
-        maxParticipants: 2
+        minParticipants: 2,
+        maxParticipants: 2,
+        capacity: 60
       },
       {
         id: 'fireless-cooking',
         title: 'Cooking Without Fire',
         description: 'Individual. 1½ hours. No fire; own utensils; no precooked items; creativity judged.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 80
       },
       {
         id: 'vegetable-carving',
         title: 'Vegetable Carving',
         description: 'Individual. 1 hour. Bring own veggies and tools; follow given theme.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 80
       },
       {
         id: 'pot-painting',
         title: 'Pot Painting',
         description: 'Pot provided. 1 hour. Only hand painting; bring materials; no spray paint.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 80
       },
       {
         id: 'art-craft',
         title: 'Art and Craft',
         description: 'Individual. Bring own materials and tools. Time: 1 hour. Original work only.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 120
       },
       {
         id: 'collage-competition',
         title: 'Collage Competition',
         description: 'Team of ≥2. Theme on the spot. Time 1 hour. Charts provided. Handmade only.',
-        maxParticipants: 2
+        minParticipants: 2,
+        maxParticipants: 4,
+        capacity: 100
       },
       {
         id: 'pencil-sketch',
         title: 'Pencil Sketch',
         description: 'Individual. Theme on the spot. Papers provided. Graphite/charcoal only.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 150
       },
       {
         id: 'best-waste',
         title: 'Best Out of Waste',
         description: 'Individual. 1½ hours. Only waste/recyclable materials; eco-friendly models.',
-        maxParticipants: 1
+        minParticipants: 1,
+        maxParticipants: 1,
+        capacity: 120
       }
     ];
 
+    // selectedEvents: { [eventId]: { teamSize: number } }
     let selectedEvents = {};
     let userContext = null;
 
@@ -440,7 +511,7 @@
     const eventsGrid = document.getElementById('eventsGrid');
     const selectionSummary = document.getElementById('selectionSummary');
     const summaryItems = document.getElementById('summaryItems');
-    const proceedBtn = document.getElementById('proceedToPayment');
+    const proceedBtn = document.getElementById('proceedToDetails');
     const pageLoader = document.getElementById('pageLoader');
     const userInfo = document.getElementById('userInfo');
 
@@ -514,10 +585,15 @@
           <div class="event-price-badge">₹100</div>
           <div class="event-content">
             <div class="event-title">${event.title}</div>
-            <div class="event-description">${event.description}</div>
+            <div class="event-description">${event.description} • Team ${event.minParticipants === event.maxParticipants ? event.maxParticipants : `${event.minParticipants}–${event.maxParticipants}`}</div>
           </div>
           <div class="event-actions">
             <button class="select-btn" data-event-id="${event.id}">Select</button>
+            <div class="team-controls" id="tc-${event.id}" aria-live="polite">
+              <button class="team-btn" data-op="-" data-event-id="${event.id}" aria-label="Decrease team size">−</button>
+              <span class="team-size" id="ts-${event.id}">${event.minParticipants || 1}</span>
+              <button class="team-btn" data-op="+" data-event-id="${event.id}" aria-label="Increase team size">+</button>
+            </div>
           </div>
         `;
         
@@ -527,6 +603,12 @@
           e.stopPropagation();
           toggleEventSelection(event.id);
         });
+
+        // Add team control handlers
+        const decBtn = eventCard.querySelector(`.team-btn[data-op="-"][data-event-id="${event.id}"]`);
+        const incBtn = eventCard.querySelector(`.team-btn[data-op="+"][data-event-id="${event.id}"]`);
+        decBtn.addEventListener('click', (e) => { e.stopPropagation(); adjustTeam(event.id, -1); });
+        incBtn.addEventListener('click', (e) => { e.stopPropagation(); adjustTeam(event.id, +1); });
         
         eventsGrid.appendChild(eventCard);
       });
@@ -537,6 +619,8 @@
       console.log('Toggling event:', eventId);
       const eventCard = document.querySelector(`[data-event-id="${eventId}"]`);
       const selectBtn = eventCard.querySelector('.select-btn');
+      const teamControls = document.getElementById(`tc-${eventId}`);
+      const eventMeta = EVENTS_DATA.find(e => e.id === eventId);
       
       if (selectedEvents[eventId]) {
         // Deselect event
@@ -544,15 +628,37 @@
         eventCard.classList.remove('selected');
         selectBtn.classList.remove('selected');
         selectBtn.textContent = 'Select';
+        teamControls?.classList.remove('show');
       } else {
         // Select event with default quantity of 1
-        selectedEvents[eventId] = 1;
+        const defaultTeam = Math.max(1, eventMeta?.minParticipants || 1);
+        selectedEvents[eventId] = { teamSize: defaultTeam };
         eventCard.classList.add('selected');
         selectBtn.classList.add('selected');
         selectBtn.textContent = 'Unselect';
+        teamControls?.classList.add('show');
+        const ts = document.getElementById(`ts-${eventId}`);
+        if (ts) ts.textContent = String(defaultTeam);
       }
       
       console.log('Current selected events:', selectedEvents);
+      updateSelectionSummary();
+    }
+
+    function adjustTeam(eventId, delta) {
+      const meta = EVENTS_DATA.find(e => e.id === eventId);
+      if (!meta || !selectedEvents[eventId]) return;
+      const min = meta.minParticipants || 1;
+      const max = meta.maxParticipants || 1;
+      const next = Math.max(min, Math.min(max, (selectedEvents[eventId].teamSize || min) + delta));
+      if (next === selectedEvents[eventId].teamSize) {
+        if (delta > 0) alert(`Max team size reached (${max}).`);
+        if (delta < 0) alert(`Min team size is ${min}.`);
+        return;
+      }
+      selectedEvents[eventId].teamSize = next;
+      const ts = document.getElementById(`ts-${eventId}`);
+      if (ts) ts.textContent = String(next);
       updateSelectionSummary();
     }
 
@@ -566,18 +672,31 @@
         
         let summaryHTML = '';
         
-        Object.entries(selectedEvents).forEach(([eventId]) => {
+        Object.entries(selectedEvents).forEach(([eventId, data]) => {
           const event = EVENTS_DATA.find(e => e.id === eventId);
           
           summaryHTML += `
             <div class="summary-item">
               <span>${event.title}</span>
-              <span>✓ Selected</span>
+              <span>
+                <button class="team-btn" onclick="return false" data-sum-dec="${event.id}">−</button>
+                <strong style="margin:0 6px;">${data.teamSize}</strong>
+                <button class="team-btn" onclick="return false" data-sum-inc="${event.id}">+</button>
+              </span>
             </div>
           `;
         });
         
         summaryItems.innerHTML = summaryHTML;
+        // Wire summary +/- buttons
+        summaryItems.querySelectorAll('[data-sum-dec]').forEach(btn => btn.addEventListener('click', (e)=>{
+          const id = e.currentTarget.getAttribute('data-sum-dec');
+          adjustTeam(id, -1);
+        }));
+        summaryItems.querySelectorAll('[data-sum-inc]').forEach(btn => btn.addEventListener('click', (e)=>{
+          const id = e.currentTarget.getAttribute('data-sum-inc');
+          adjustTeam(id, +1);
+        }));
         
         // Calculate event count and total amount
         const eventCount = Object.keys(selectedEvents).length;
@@ -590,6 +709,7 @@
         // Store in sessionStorage
         sessionStorage.setItem('eventCount', String(eventCount));
         sessionStorage.setItem('totalAmount', String(totalAmount));
+        sessionStorage.setItem('selectedEvents', JSON.stringify(selectedEvents));
         
       } else {
         selectionSummary.classList.remove('show');
@@ -598,11 +718,12 @@
         // Reset values when no events selected
         sessionStorage.setItem('eventCount', '0');
         sessionStorage.setItem('totalAmount', '0');
+        sessionStorage.removeItem('selectedEvents');
       }
     }
 
-    // Proceed to payment
-    async function proceedToPayment() {
+    // Proceed to details
+    async function proceedToDetails() {
       console.log('Submit button clicked!');
       console.log('Selected events:', selectedEvents);
       
@@ -626,14 +747,16 @@
         // Prepare event selections without pricing
         const eventSelections = [];
 
-        Object.entries(selectedEvents).forEach(([eventId, quantity]) => {
+        Object.entries(selectedEvents).forEach(([eventId, data]) => {
           const event = EVENTS_DATA.find(e => e.id === eventId);
           
           eventSelections.push({
             eventId,
             eventTitle: event.title,
-            quantity,
-            maxParticipants: event.maxParticipants
+            teamSize: data.teamSize,
+            minParticipants: event.minParticipants,
+            maxParticipants: event.maxParticipants,
+            capacity: event.capacity
           });
         });
 
@@ -693,7 +816,7 @@
           console.warn('Linking selection to registration was skipped due to rules:', linkErr?.message || linkErr);
         }
 
-        // Store selections in session storage for payment page
+        // Store selections in session storage for next step
         sessionStorage.setItem('eventSelections', JSON.stringify(eventSelections));
         sessionStorage.setItem('totalAmount', String(totalAmount));
         sessionStorage.setItem('payment_user_context', JSON.stringify({
@@ -711,9 +834,9 @@
           sessionStorage.setItem('events_submitted_time', String(Date.now()));
         } catch (e) { console.warn('Failed to set submission lock:', e); }
 
-        // Redirect to final step page
-        console.log('Redirecting to success page');
-        window.location.href = 'success.html';
+        // Redirect to details page
+        console.log('Redirecting to details page');
+        window.location.href = 'participant-details.html';
 
       } catch (error) {
         console.error('Error saving event selections:', {
@@ -739,7 +862,7 @@
       // Add proceed button handler
       if (proceedBtn) {
         console.log('Submit button found, adding click handler');
-        proceedBtn.addEventListener('click', proceedToPayment);
+        proceedBtn.addEventListener('click', proceedToDetails);
         console.log('Click handler attached successfully');
       } else {
         console.error('Submit button not found!');

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Participant Details – Evoka 2025</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/main.css?v=20251030">
+  <style>
+    .form-card { background: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 16px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 768px){ .grid-2 { grid-template-columns: repeat(2,1fr); } }
+    .section-title { margin: 8px 0; font-size: 16px; color: var(--primary); font-weight: 800; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .summary { background: rgba(0,0,0,.35); border: 1px solid rgba(255,255,255,.08); border-radius: 8px; padding: 12px; margin-top: 12px; }
+    .chip { display:inline-block; border:1px solid var(--line); padding:4px 8px; border-radius: 999px; font-size:12px; margin: 3px 6px 0 0; }
+  </style>
+</head>
+<body>
+  <main class="container" role="main">
+    <nav aria-label="Progress" style="margin: 6px 0 8px 0;">
+      <div style="display:flex; gap:8px; align-items:center; font-size:12px; color:var(--muted);">
+        <span style="opacity:.75">1 Event Selection</span>
+        <span>›</span>
+        <span style="font-weight:700; color:var(--primary)">2</span>
+        <span>Details</span>
+        <span>›</span>
+        <span style="opacity:.5">3 Payment</span>
+      </div>
+    </nav>
+
+    <header class="event-header">
+      <div class="event-info">
+        <div class="event-breadcrumb">
+          <a href="../index.html">EVOKE 2K25</a> <span>/</span> <span>Participant Details</span>
+        </div>
+        <h1 class="event-title">Participant Details</h1>
+        <p class="event-subtitle">Provide participant info for selected events</p>
+      </div>
+    </header>
+
+    <section class="summary" id="selectionSummary" style="display:none">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div>
+          <strong>Selected Events</strong>
+          <div id="selectedChips" style="margin-top:6px"></div>
+        </div>
+        <div>
+          <div class="chip">Events: <span id="eventCount">0</span></div>
+          <div class="chip">Amount: <span id="totalAmount">₹0</span></div>
+        </div>
+      </div>
+    </section>
+
+    <form class="form-card" id="detailsForm" novalidate>
+      <div class="grid grid-2">
+        <div class="form-group">
+          <label for="fullName">Name</label>
+          <input id="fullName" class="input" type="text" placeholder="Your Name" required minlength="2">
+        </div>
+        <div class="form-group">
+          <label for="class">Class</label>
+          <select id="class" class="input" required>
+            <option value="" disabled selected>select class</option>
+            <option value="10th Class">10th Class</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="school">School name</label>
+          <input id="school" class="input" type="text" placeholder="Your School name" required minlength="2">
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input id="phone" class="input" type="tel" placeholder="10-digit phone number" required pattern="^\\d{10}$" maxlength="10">
+        </div>
+      </div>
+
+      <div class="muted">Kindly provide valid phone number and details.</div>
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:12px">Continue to Payment</button>
+    </form>
+
+    <div style="text-align:center; margin-top:16px">
+      <a href="events-list.html" class="login-link">← Back to Events</a>
+    </div>
+  </main>
+
+  <div id="pageLoader" class="page-loader" aria-live="polite" aria-busy="false">
+    <div class="spinner-standalone" aria-hidden="true"></div>
+    <div id="loaderText" class="loader-text">Saving…</div>
+  </div>
+
+  <script type="module">
+    import { db } from '../assets/js/firebase-config.js';
+    import { collection, addDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
+
+    const form = document.getElementById('detailsForm');
+    const summary = document.getElementById('selectionSummary');
+    const chips = document.getElementById('selectedChips');
+
+    function showLoader(msg){
+      document.getElementById('loaderText').textContent = msg || 'Saving…';
+      document.getElementById('pageLoader').classList.add('show');
+    }
+    function hideLoader(){
+      document.getElementById('pageLoader').classList.remove('show');
+    }
+
+    function prefill(){
+      try {
+        const name = sessionStorage.getItem('lastName') || '';
+        const course = sessionStorage.getItem('lastCourse') || '';
+        const college = sessionStorage.getItem('lastCollege') || '';
+        if (name) document.getElementById('fullName').value = name;
+        if (course) document.getElementById('class').value = course;
+        if (college) document.getElementById('school').value = college;
+        const prev = JSON.parse(sessionStorage.getItem('participantDetails')||'{}');
+        if (prev?.phone) document.getElementById('phone').value = prev.phone;
+      } catch {}
+    }
+
+    function renderSummary(){
+      try{
+        const sel = JSON.parse(sessionStorage.getItem('eventSelections') || '[]');
+        const count = Number(sessionStorage.getItem('eventCount')||'0');
+        const total = Number(sessionStorage.getItem('totalAmount')||'0');
+        if (sel.length){
+          summary.style.display = '';
+          document.getElementById('eventCount').textContent = String(count);
+          document.getElementById('totalAmount').textContent = `₹${total}`;
+          chips.innerHTML = sel.map(s => `<span class="chip">${s.eventTitle} • Team ${s.teamSize}</span>`).join('');
+        }
+      }catch{}
+    }
+
+    function persistLocal(){
+      const data = collectData();
+      try { sessionStorage.setItem('participantDetails', JSON.stringify(data)); } catch {}
+    }
+
+    function collectData(){
+      return {
+        name: document.getElementById('fullName').value.trim(),
+        class: document.getElementById('class').value || '',
+        school: document.getElementById('school').value.trim(),
+        phone: (document.getElementById('phone').value || '').replace(/[^\\d]/g,'').slice(0,15),
+        token: sessionStorage.getItem('lastToken') || '',
+        selections: JSON.parse(sessionStorage.getItem('eventSelections') || '[]')
+      };
+    }
+
+    async function saveBestEffortToFirestore(payload){
+      try {
+        // This collection may be blocked by rules; try-catch ensures UX flow continues
+        const ref = collection(db, 'participantDetails');
+        await addDoc(ref, { ...payload, createdAt: serverTimestamp() });
+      } catch (e) {
+        console.warn('Participant details write skipped or failed due to rules:', e?.message || e);
+      }
+    }
+
+    form.addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      const data = collectData();
+      if (!data.name || !data.school || !data.class || !/^\\d{10}$/.test(data.phone)){
+        alert('Please complete required fields with valid information.');
+        return;
+      }
+
+      showLoader('Saving details…');
+      persistLocal();
+      await saveBestEffortToFirestore(data);
+      hideLoader();
+      window.location.href = 'payment.html';
+    });
+
+    window.addEventListener('beforeunload', persistLocal);
+
+    // init
+    prefill();
+    renderSummary();
+  </script>
+</body>
+</html>
